@@ -1,0 +1,23 @@
+TeamIntent how many people work at tivix
+TeamIntent how many people work there
+
+
+MemberIntent who is nick kelly
+MemberIntent who is nick
+MemberIntent who is nick k
+MemberIntent nick kelly
+MemberIntent nick
+
+
+WhoAreWeIntent who is tivix
+WhoAreWeIntent who they are
+WhoAreWeIntent who are they
+
+
+WhatWeDoIntent what they do
+WhatWeDoIntent what does tivix do
+
+WhatItIsIntent what is it
+WhatItIsIntent what is tivix
+WhatItIsIntent what is a tivix
+WhatItIsIntent what does tivix mean
