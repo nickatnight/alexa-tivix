@@ -37,6 +37,7 @@ class AlexaTivixHandler(AlexaBaseHandler):
 
     def on_processing_error(self, event, context, exc):
         session_attributes = {}
+        card_title = "Error"
         speech_output = "I am having difficulty fulfilling your request."
 
         reprompt_text = "I did not hear you"
@@ -46,7 +47,7 @@ class AlexaTivixHandler(AlexaBaseHandler):
             speech_output = "I am having difficulty fulfilling your request. {0}".format(exc.message)
 
         card_output = speech_output
-        speechlet = self._build_speechlet_response(self.card_title,
+        speechlet = self._build_speechlet_response(card_title,
                                                    card_output,
                                                    speech_output,
                                                    reprompt_text,
@@ -97,7 +98,39 @@ class AlexaTivixHandler(AlexaBaseHandler):
 
             card_title = "Team Info"
             card_output = "Info on team members"
-            speech_output = "There are currently %s ridiculously smart and passionate individuals who work at Tivix. Together we've helped organizations across many sectors to build innovative software that has improved their ability to create value and deliver impact." % (employee_total, )
+            speech_output = "There are currently %s ridiculously smart and passionate individuals who work at Tivix. Together we've helped organizations across many sectors to build innovative software that has improved their ability to create value and deliver impact. Would you like to know about a particular employee?" % (employee_total, )
+            speechlet = self._build_speechlet_response(card_title,
+                                                       card_output,
+                                                       speech_output,
+                                                       reprompt_text,
+                                                       should_end_session)
+
+            response = self._build_response(session_attributes, speechlet)
+
+        elif intent_name == "WhichEmployeeIntent":
+            page = TIVIX_URLS['team']
+            first_name = None
+            last_name = None
+            speech_output = "This didn't work"
+            r = urllib2.urlopen(page)
+            should_end_session = True
+
+            soup = BeautifulSoup(r, 'html.parser')
+
+            members = soup.findAll('div', attrs={'class': 'team-overlay'})
+
+            if self._slot_exists("EmployeeFirstName", intent_request) and self._slot_exists("EmployeeLastName", intent_request):
+                first_name = self._get_slot_value("EmployeeFirstName", intent_request)
+                last_name = self._get_slot_value("EmployeeLastName", intent_request)
+            elif self._slot_exists("EmployeeFirstName", intent_request):
+                first_name = self._get_slot_value("EmployeeFirstName", intent_request)
+
+                for member in members:
+                    if member.contents[0].split(' ')[0].lower() == first_name:
+                        speech_output = "This worked"
+
+            card_title = "Employee Info"
+            card_output = "Info on team members"
             speechlet = self._build_speechlet_response(card_title,
                                                        card_output,
                                                        speech_output,

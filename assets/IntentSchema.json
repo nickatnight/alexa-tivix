@@ -14,6 +14,19 @@
     },
     {
       "intent": "WhatItIsIntent"
+    },
+    {
+      "intent": "WhichEmployeeIntent",
+      "slots": [
+        {
+          "name": "EmployeeFirstName",
+          "type": "FIRST_NAMES"
+        },
+        {
+          "name": "EmployeeLastName",
+          "type": "LAST_NAMES"
+        }
+      ]
     }
   ]
 }
