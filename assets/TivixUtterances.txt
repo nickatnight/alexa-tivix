@@ -1,5 +1,7 @@
 TeamIntent how many people work at tivix
 TeamIntent how many people work there
+TeamIntent who works there
+TeamIntent how many employees work there
 
 
 MemberIntent who is nick kelly

@@ -1,5 +1,9 @@
+import urllib2
 
+from bs4 import BeautifulSoup
 from pyalexaskill.AlexaBaseHandler import AlexaBaseHandler
+
+from utilities.consts import TIVIX_URLS
 
 
 class AlexaTivixHandler(AlexaBaseHandler):
@@ -73,36 +77,39 @@ class AlexaTivixHandler(AlexaBaseHandler):
 
 
     def on_intent(self, intent_request, session):
-        # response = None
-        # session_attributes = {}
-        # reprompt_text = "I did not hear you sample"
-        # should_end_session = True
-        # card_output = "Sample Card Output"
-        # speech_output = "Sample Speech Output"
-        #
-        # intent_name = self._get_intent_name(intent_request)
-        # if intent_name == "Your First Intent":
-        #     speechlet = self._build_speechlet_response(self.card_title,
-        #                                                card_output,
-        #                                                speech_output,
-        #                                                reprompt_text,
-        #                                                should_end_session)
-        #
-        #     response = self._build_response(session_attributes, speechlet)
-        #
-        # elif intent_name == "Your Second Intent":
-        #     speechlet = self._build_speechlet_response(self.card_title,
-        #                                                card_output,
-        #                                                speech_output,
-        #                                                reprompt_text,
-        #                                                should_end_session)
-        #
-        #     response = self._build_response(session_attributes, speechlet)
-        # else:
-        #     raise ValueError("Invalid intent")
+        response = None
+        session_attributes = {}
+        reprompt_text = "I'm afraid I did not hear you"
+        should_end_session = False
 
-        # return response
-        return self._test_response("on intent")
+        intent_name = self._get_intent_name(intent_request)
+
+        if intent_name == "TeamIntent":
+            page = TIVIX_URLS['team']
+
+            r = urllib2.urlopen(page)
+
+            soup = BeautifulSoup(r, 'html.parser')
+
+            members = soup.findAll('div', attrs={'class': 'team-overlay'})
+
+            employee_total = str(len(members))
+
+            card_title = "Team Info"
+            card_output = "Info on team members"
+            speech_output = "There are currently %s ridiculously smart and passionate individuals who work at Tivix. Together we've helped organizations across many sectors to build innovative software that has improved their ability to create value and deliver impact." % (employee_total, )
+            speechlet = self._build_speechlet_response(card_title,
+                                                       card_output,
+                                                       speech_output,
+                                                       reprompt_text,
+                                                       should_end_session)
+
+            response = self._build_response(session_attributes, speechlet)
+
+        else:
+            raise ValueError("Invalid intent")
+
+        return response
 
     def on_session_ended(self, session_end_request, session):
         return self._test_response("on session end")
