@@ -11,14 +11,11 @@ Peter
 Silin
 Eric
 Mariusz
-Adam
 Marzena
 Erin
 Tan
 Meghan
 Łukasz
-Łukasz
-Peter
 Rafał
 Krystian
 Amber
@@ -40,7 +37,6 @@ Girish
 Jack
 Leszek
 Grzegorz
-Adam
 Ruby
 Ryan
 Katarzyna
@@ -48,4 +44,3 @@ Nick
 Dave
 Rex
 Jeannie
-Michał
