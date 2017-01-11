@@ -120,8 +120,17 @@ class AlexaTivixHandler(AlexaBaseHandler):
             members = soup.findAll('div', attrs={'class': 'team-overlay'})
 
             if self._slot_exists("EmployeeFirstName", intent_request) and self._slot_exists("EmployeeLastName", intent_request):
-                first_name = self._get_slot_value("EmployeeFirstName", intent_request)
-                last_name = self._get_slot_value("EmployeeLastName", intent_request)
+                first_name = self._get_slot_value("EmployeeFirstName", intent_request).lower()
+                last_name = self._get_slot_value("EmployeeLastName", intent_request).lower()
+
+                for member in members:
+                    if member.contents[0].lower() == "%s %s" % (first_name, last_name):
+
+                        employee_page = "%s%s-%s/" % (page, first_name, last_name)
+                        r = urllib2.urlopen(employee_page)
+                        soup = BeautifulSoup(r, 'html.parser')
+                        speech_output = soup.find('div', attrs={'class': 'rich-text'}).text
+
             elif self._slot_exists("EmployeeFirstName", intent_request):
                 first_name = self._get_slot_value("EmployeeFirstName", intent_request)
 
