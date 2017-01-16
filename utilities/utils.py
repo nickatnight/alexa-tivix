@@ -34,29 +34,25 @@ class IntentHandler(object):
         return speech_packet
 
     def team_intent(self):
-        packet = {}
         soup = self.get_page_content(TIVIX_URLS['team'])
-        packet['should_end_session'] = False
-        packet['card_title'] = "Team Info"
-        packet['card_output'] = "Info on team members"
-        packet['reprompt_text'] = "I'm afraid I did not hear you"
-
         members = soup.findAll('div', attrs={'class': 'team-overlay'})
-
         employee_total = str(len(members))
+        speech_output = "There are currently %s ridiculously smart and passionate individuals who work at Tivix. Would you like to know about a particular employee?" % (employee_total, )
 
-        packet['speech_output'] = "There are currently %s ridiculously smart and passionate individuals who work at Tivix. Together we've helped organizations across many sectors to build innovative software that has improved their ability to create value and deliver impact. Would you like to know about a particular employee?" % (employee_total, )
-        return packet
+        packet = Packet(
+            False,
+            "Team Info",
+            "Info on team members",
+            "I'm afraid I did not hear you",
+            speech_output
+        )
+
+        return packet.deliver()
 
     def which_employee_intent(self):
-        packet = {}
+        speech_output = "This did not work"
         soup = self.get_page_content(TIVIX_URLS['team'])
-        speech_output = "This didn't work"
         first_name, last_name = None, None
-        packet['should_end_session'] = True
-        packet['card_title'] = "Employee Info"
-        packet['card_output'] = "Info on team members"
-        packet['reprompt_text'] = "I'm afraid I did not hear that name"
 
         members = soup.findAll('div', attrs={'class': 'team-overlay'})
 
@@ -79,34 +75,59 @@ class IntentHandler(object):
         #         if member.contents[0].split(' ')[0].lower() == first_name:
         #             speech_output = "This worked"
 
-        packet['speech_output'] = speech_output
 
-        return packet
+        packet = Packet(
+            True,
+            "Employee Info",
+            "Info on team members",
+            "I'm afraid I did not hear that name",
+            speech_output
+        )
+
+        return packet.deliver()
 
     def who_we_are(self):
-        packet = {}
         soup = self.get_page_content(TIVIX_URLS['services'])
-        speech_output = "This didn't work"
-        packet['should_end_session'] = True
-        packet['card_title'] = "Who we are"
-        packet['card_output'] = "Info on us"
-        packet['reprompt_text'] = "I'm afraid I did not hear that name"
         who_we_are_text = soup.find('div', attrs={'class': 'text-container position-center valign-middle justify-left'}).find('div', attrs={'class': 'rich-text'}).text
         speech_output = "Well that's a really good question. We are a bunch of things, but mainly, %s" % (who_we_are_text, )
-        packet['speech_output'] = speech_output
+        packet = Packet(
+            True,
+            "Who we are",
+            "Info on us",
+            "I'm afraid I did not hear that name",
+            speech_output
+        )
 
-        return packet
+        return packet.deliver()
 
     def what_we_do(self):
-        packet = {}
         soup = self.get_page_content(TIVIX_URLS['services'])
-        speech_output = "This didn't work"
-        packet['should_end_session'] = True
-        packet['card_title'] = "What we do"
-        packet['card_output'] = "More info on us"
-        packet['reprompt_text'] = "I'm afraid I did not hear that name"
-
         msg = soup.find('div', attrs={'class': 'rich-text'}).text
-        packet['speech_output'] = msg
+        packet = Packet(
+            True,
+            "What we do",
+            "More info on us",
+            "I'm afraid I did not catch that",
+            msg
+        )
 
-        return packet
+        return packet.deliver()
+
+class Packet(object):
+    def __init__(self, session_end, card_title, card_output, reprompt_text, speech_output):
+        self.session_end = session_end
+        self.card_title = card_title
+        self.card_output = card_output
+        self.reprompt_text = reprompt_text
+        self.speech_output = speech_output
+
+    def deliver(self):
+        delivery = {
+            'should_end_session': self.session_end,
+            'card_title': self.card_title,
+            'card_output': self.card_output,
+            'reprompt_text': self.reprompt_text,
+            'speech_output': self.speech_output
+        }
+
+        return delivery
