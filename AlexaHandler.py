@@ -1,9 +1,10 @@
+import json
 import urllib2
 
 from bs4 import BeautifulSoup
 from pyalexaskill.AlexaBaseHandler import AlexaBaseHandler
 
-from utilities.consts import TIVIX_URLS
+from utilities.utils import IntentHandler
 
 
 class AlexaTivixHandler(AlexaBaseHandler):
@@ -85,71 +86,24 @@ class AlexaTivixHandler(AlexaBaseHandler):
 
         intent_name = self._get_intent_name(intent_request)
 
-        if intent_name == "TeamIntent":
-            page = TIVIX_URLS['team']
+        slot_packet = self.assemble_slot_packets(intent_request)
 
-            r = urllib2.urlopen(page)
+        intent_handler = IntentHandler(slot_packet, intent_request, session)
 
-            soup = BeautifulSoup(r, 'html.parser')
+        # get the speech output
+        speech_packet= intent_handler.run_handler(intent_name)
+        speechlet = self._build_speechlet_response(
+            speech_packet['card_title'],
+            speech_packet['card_output'],
+            speech_packet['speech_output'],
+            speech_packet['reprompt_text'],
+            speech_packet['should_end_session']
+        )
 
-            members = soup.findAll('div', attrs={'class': 'team-overlay'})
+        response = self._build_response(session_attributes, speechlet)
 
-            employee_total = str(len(members))
-
-            card_title = "Team Info"
-            card_output = "Info on team members"
-            speech_output = "There are currently %s ridiculously smart and passionate individuals who work at Tivix. Together we've helped organizations across many sectors to build innovative software that has improved their ability to create value and deliver impact. Would you like to know about a particular employee?" % (employee_total, )
-            speechlet = self._build_speechlet_response(card_title,
-                                                       card_output,
-                                                       speech_output,
-                                                       reprompt_text,
-                                                       should_end_session)
-
-            response = self._build_response(session_attributes, speechlet)
-
-        elif intent_name == "WhichEmployeeIntent":
-            page = TIVIX_URLS['team']
-            first_name = None
-            last_name = None
-            speech_output = "This didn't work"
-            r = urllib2.urlopen(page)
-            should_end_session = True
-
-            soup = BeautifulSoup(r, 'html.parser')
-
-            members = soup.findAll('div', attrs={'class': 'team-overlay'})
-
-            if self._slot_exists("EmployeeFirstName", intent_request) and self._slot_exists("EmployeeLastName", intent_request):
-                first_name = self._get_slot_value("EmployeeFirstName", intent_request).lower()
-                last_name = self._get_slot_value("EmployeeLastName", intent_request).lower()
-
-                for member in members:
-                    if member.contents[0].lower() == "%s %s" % (first_name, last_name):
-
-                        employee_page = "%s%s-%s/" % (page, first_name, last_name)
-                        r = urllib2.urlopen(employee_page)
-                        soup = BeautifulSoup(r, 'html.parser')
-                        speech_output = soup.find('div', attrs={'class': 'rich-text'}).text
-
-            elif self._slot_exists("EmployeeFirstName", intent_request):
-                first_name = self._get_slot_value("EmployeeFirstName", intent_request)
-
-                for member in members:
-                    if member.contents[0].split(' ')[0].lower() == first_name:
-                        speech_output = "This worked"
-
-            card_title = "Employee Info"
-            card_output = "Info on team members"
-            speechlet = self._build_speechlet_response(card_title,
-                                                       card_output,
-                                                       speech_output,
-                                                       reprompt_text,
-                                                       should_end_session)
-
-            response = self._build_response(session_attributes, speechlet)
-
-        else:
-            raise ValueError("Invalid intent")
+        # else:
+        #     raise ValueError("Invalid intent")
 
         return response
 
@@ -200,3 +154,23 @@ class AlexaTivixHandler(AlexaBaseHandler):
 
     def on_startover_intent(self, intent_request, session):
         return self._test_response("on start over intent")
+
+    def assemble_slot_packets(self, intent_request):
+        slots = {}
+
+        with open('assets/IntentSchema.json') as data_file:
+            data = json.load(data_file)
+
+        for intent in data['intents']:
+            if 'slots' in intent:
+                for slot in intent['slots']:
+                    slot_name = slot['name']
+                    value = 'None'
+                    exists = self._slot_exists(slot_name, intent_request)
+
+                    if exists:
+                        value = self._get_slot_value(slot_name, intent_request)
+
+                    slots[slot_name] = { 'exists': exists, 'value': value }
+
+        return slots

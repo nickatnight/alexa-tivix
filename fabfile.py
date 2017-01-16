@@ -10,4 +10,4 @@ env.colorize_errors = True
 
 
 def lambda_push():
-    local('create_aws_lambda.py -i "AlexaHandler.py, main.py, utilities/__init__.py, utilities/consts.py"')
+    local('create_aws_lambda.py -i "AlexaHandler.py, main.py, assets/IntentSchema.json, utilities/__init__.py, utilities/utils.py, utilities/consts.py"')
