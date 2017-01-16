@@ -112,12 +112,13 @@ class AlexaTivixHandler(AlexaBaseHandler):
 
     def on_help_intent(self, intent_request, session):
         session_attributes = {}
+        card_title = "Help"
         card_output = "Card Help"
         speech_output = "Speech Help"
 
         reprompt_text = "I did not hear you, {0}".format(speech_output)
         should_end_session = False
-        speechlet = self._build_speechlet_response(self.card_title,
+        speechlet = self._build_speechlet_response(card_title,
                                                    card_output,
                                                    speech_output,
                                                    reprompt_text,
@@ -130,12 +131,13 @@ class AlexaTivixHandler(AlexaBaseHandler):
 
     def on_cancel_intent(self, intent_request, session):
         session_attributes = {}
+        card_title = "Bye"
         card_output = "Thank you and Good-bye"
         speech_output = "Thank you and Good-bye"
 
         reprompt_text = "{0}".format(speech_output)
         should_end_session = True
-        speechlet = self._build_speechlet_response(self.card_title,
+        speechlet = self._build_speechlet_response(card_title,
                                                    card_output,
                                                    speech_output,
                                                    reprompt_text,
@@ -155,6 +157,7 @@ class AlexaTivixHandler(AlexaBaseHandler):
     def on_startover_intent(self, intent_request, session):
         return self._test_response("on start over intent")
 
+    # Tivix
     def assemble_slot_packets(self, intent_request):
         slots = {}
 

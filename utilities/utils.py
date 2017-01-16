@@ -24,6 +24,12 @@ class IntentHandler(object):
             speech_packet = self.team_intent()
         elif intent == "WhichEmployeeIntent":
             speech_packet = self.which_employee_intent()
+        elif intent == "WhoAreWeIntent":
+            speech_packet = self.who_we_are()
+        elif intent == "WhatWeDoIntent":
+            speech_packet = self.what_we_do()
+        else:
+            raise ValueError("Invalid intent")
 
         return speech_packet
 
@@ -74,5 +80,33 @@ class IntentHandler(object):
         #             speech_output = "This worked"
 
         packet['speech_output'] = speech_output
+
+        return packet
+
+    def who_we_are(self):
+        packet = {}
+        soup = self.get_page_content(TIVIX_URLS['services'])
+        speech_output = "This didn't work"
+        packet['should_end_session'] = True
+        packet['card_title'] = "Who we are"
+        packet['card_output'] = "Info on us"
+        packet['reprompt_text'] = "I'm afraid I did not hear that name"
+        who_we_are_text = soup.find('div', attrs={'class': 'text-container position-center valign-middle justify-left'}).find('div', attrs={'class': 'rich-text'}).text
+        speech_output = "Well that's a really good question. We are a bunch of things, but mainly, %s" % (who_we_are_text, )
+        packet['speech_output'] = speech_output
+
+        return packet
+
+    def what_we_do(self):
+        packet = {}
+        soup = self.get_page_content(TIVIX_URLS['services'])
+        speech_output = "This didn't work"
+        packet['should_end_session'] = True
+        packet['card_title'] = "What we do"
+        packet['card_output'] = "More info on us"
+        packet['reprompt_text'] = "I'm afraid I did not hear that name"
+
+        msg = soup.find('div', attrs={'class': 'rich-text'}).text
+        packet['speech_output'] = msg
 
         return packet
