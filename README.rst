@@ -1,14 +1,12 @@
 
-|Alexa| x |Tivix|
+|Alexa| <-> |Tivix|
 
-.. |Alexa| image:: images/amazon-alexa.png
-           :height: 400px
-           :width: 750px
-           :scale: 50
-.. |Tivix| image:: images/Tivix-logo-color-lg.png
-           :height: 180px
-           :width: 459px
-           :scale: 50
+.. |Alexa| image:: https://images-na.ssl-images-amazon.com/images/I/3166L-pLZbL.png
+           :height: 120px
+           :width: 120px
+.. |Tivix| image:: http://www.tivix.com/static/global/images/apple-touch-icon-120x120.png
+           :height: 120px
+           :width: 120px
 
 ==================================================================
 Alexa-Tivix: Tivix Application for Alexa powered devices
