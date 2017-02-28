@@ -2,7 +2,9 @@
 |Alexa| x |Tivix|
 
 .. |Alexa| image:: images/amazon-alexa.png
+           :scale: 50 %
 .. |Tivix| image:: images/Tivix-logo-color-lg.png
+           :scale: 50 %
 
 ==================================================================
 Alexa-Tivix: Tivix Application for Alexa powered devices
@@ -26,7 +28,9 @@ Usage
 
 Utterances:
 
-- *Ask Tivix* - Alexa will greet you with a brief introduction of the company. (The session will still be open, so at this point, there are several utterances you can proceed with)
+- *Ask Tivix*
+
+  -> Alexa will greet you with a brief introduction of the company. (The session will still be open, so at this point, there are several utterances you can proceed with)
 
   *What does Tivix do?*
 
@@ -42,7 +46,7 @@ Utterances:
 
   *How many employees work there?*
 
-  -> Alexa will dynamically get the total number of employees by scrapping tivix.com/team-members/ and utter the total amount, and then proceed by asking if you would like more info on a particular employee. Currently, you must provide a first AND last name (There are multiple employees with the same first name). Once determined, Alexa will read that chosen employees Bio of Tivix.com
+  -> Alexa will dynamically get the total number of employees by scrapping tivix.com/team-members/ and utter the total amount, and then proceed by asking if you would like more info on a particular employee. Currently, you must provide a first AND last name (There are multiple employees with the same first name). Once determined, Alexa will read that chosen employees bio of Tivix.com
 
   *Who is Tivix?*
 
