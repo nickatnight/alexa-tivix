@@ -2,9 +2,9 @@
 |Alexa| x |Tivix|
 
 .. |Alexa| image:: images/amazon-alexa.png
-   :scale: 50 %
+           :scale: 50
 .. |Tivix| image:: images/Tivix-logo-color-lg.png
-   :scale: 50 %
+           :scale: 50
 
 ==================================================================
 Alexa-Tivix: Tivix Application for Alexa powered devices
