@@ -2,8 +2,12 @@
 |Alexa| x |Tivix|
 
 .. |Alexa| image:: images/amazon-alexa.png
+           :width: 750px
+           :height: 400px
            :scale: 50
 .. |Tivix| image:: images/Tivix-logo-color-lg.png
+           :width: 459px
+           :height: 180px
            :scale: 50
 
 ==================================================================
